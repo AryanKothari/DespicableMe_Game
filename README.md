@@ -2,8 +2,8 @@
 <h2> Description: </h2>
 
 
-<html> Inspirtation: </html>
+<h2> Inspirtation: </h2>
 
 
 
-<html> Screenshots: </html>
+<h2> Screenshots: </h2>
