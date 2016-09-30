@@ -128,9 +128,7 @@ void draw()
 {
   if (Lives == 0)
   {
-    textSize(40);
-    text("Quit", 670, 520);
-    pause();
+    background(0);
   }
 
 
@@ -139,6 +137,7 @@ void draw()
   {
     screen = 1;
   }
+  
 
   if (screen == 1)
   {
@@ -162,6 +161,14 @@ void draw()
     background(Level2);//specific
     Level1Barriers();
     Gameplay();
+    
+        if (bobX > width/1.05)
+    {
+      screen = 3;
+      Playing = true;
+      bobX = 50;
+      bobY = 780;
+    }
   }
 
   if (screen == 3)
@@ -215,17 +222,18 @@ void Gameplay()
   BarrierRestrictions();
   BasicPlatform();
   CollisonDetection();
-  
-  if(millis() - LastTime > 1000)
-  {
+
+
   if (CollisionDetected == true)
   {
-    LastTime = millis();
-    Lives = Lives - 1;
-    Playing = false;
-    CollisionDetected = false;
-    Playing = true;
-  }
+    if (millis() - LastTime > 2000)
+    {
+      LastTime = millis();
+      Lives = Lives - 1;
+      CollisionDetected = false;
+      song3.play();
+    }
+    song3.pause();
   }
 }
 
