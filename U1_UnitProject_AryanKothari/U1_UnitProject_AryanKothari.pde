@@ -24,13 +24,16 @@ PImage Brick;
 PImage Castle;
 PImage Bob;
 PImage Level2;
+PImage Defense;
 boolean CollisionDetected = false;
+boolean Playing = true;
 int Lives = 3;
 float velY = 5;
 float velX = 5;
 float bobX = 50;
 float DoorY = 800;
 float DoorX = 1400;
+int LastTime = millis();
 float r = random(255);
 float g = random(255);
 float b = random(255);
@@ -88,13 +91,14 @@ void setup ()
   Broc = loadImage("broc.png");
   Brick = loadImage("brick.png");
   Door = loadImage("door.png");
+  Defense = loadImage("objects.png");
+
 
   imageMode(CENTER);
   image(BobFront, width/1.3, height/1.75, 665, 594);
 
   imageMode(CENTER);
   image(Pizza, width/5.7, height/1.9, 500, 500);
-
 
   fill (0, 0, 100);
   textSize(100);
@@ -122,6 +126,14 @@ void setup ()
 
 void draw()
 {
+  if (Lives == 0)
+  {
+    textSize(40);
+    text("Quit", 670, 520);
+    pause();
+  }
+
+
   if (screen == 0 & mousePressed & mouseX >= 620 & mouseX <= 800 & 
     mouseY >= 400 & mouseY <= 450) 
   {
@@ -131,60 +143,25 @@ void draw()
   if (screen == 1)
   {
     background(Castle);
-    noStroke();
-
-    Barriers();
-    scoreinfo();
-    BarrierRestrictions();
-    BasicPlatform();
-
-    CollisonDetection();
-    if (CollisionDetected == true)
-    {
-      Lives = Lives - 1;
-      delay(1000);
-      for (int i = 0; i < barrierY.length; i++)
-      {
-        barrierY[i] = velY*-1;
-        r = random(255);
-        g = random(255);
-        b = random(255);
-
-        randomSize[i] = 20 + (i+1)*random(0, 10);
-      }
-
-      CollisionDetected = false;
-    }
-
-
-    if (Lives == 0)
-    {
-      textSize(40);
-      text("Quit", 670, 520);
-      pause();
-    }
-
+    Level1Barriers();
+    Gameplay();
 
     if (bobX > width/1.05)
     {
-
       screen = 2;
+      Playing = true;
+      bobX = 50;
+      DoorY = 780;
+      bobY = 780;
     }
   }
 
   if (screen == 2)
   {
-    bobX = 50;
-    DoorY = 780;
-    bobY = 780;
-
-    fill(r, g, b);
-    background(Level2);
-    noStroke();
-    Barriers();
-    scoreinfo();
-    BarrierRestrictions();
-    BasicPlatform();
+    Defense = loadImage("images.png");//specific
+    background(Level2);//specific
+    Level1Barriers();
+    Gameplay();
   }
 
   if (screen == 3)
@@ -205,24 +182,53 @@ void draw()
 //Moving Bob
 void keyPressed()
 {
-  if (keyCode == RIGHT)
+  if (keyPressed)
   {
-    bobX = bobX + 12;
-  }
-  if (keyCode == LEFT)
-  {
-    pushMatrix();
-    scale(-2.0, 2.0);
-    image(Bob, -Bob.width, 0);
-    popMatrix();
+    if (Playing)
+    {
+      if (keyCode == RIGHT)
+      {
+        bobX = bobX + 12;
+      }
+      if (keyCode == LEFT)
+      {
+        /* pushMatrix();
+         scale(-2.0, 2.0);
+         image(Bob, -Bob.width, 0);
+         popMatrix(); */
 
-    bobX = bobX - 12;
+        bobX = bobX - 12;
+      }
+    }
   }
 }
 
 
 
 //Boundaries for Barriers
+
+void Gameplay()
+{
+  fill(r, g, b);
+  noStroke();
+  scoreinfo();
+  BarrierRestrictions();
+  BasicPlatform();
+  CollisonDetection();
+  
+  if(millis() - LastTime > 1000)
+  {
+  if (CollisionDetected == true)
+  {
+    LastTime = millis();
+    Lives = Lives - 1;
+    Playing = false;
+    CollisionDetected = false;
+    Playing = true;
+  }
+  }
+}
+
 void BarrierRestrictions()
 {
   for (int i = 0; i < barrierY.length; i++)
@@ -241,14 +247,16 @@ void BarrierRestrictions()
 
 
 //Making Barriers
-void Barriers()
+
+
+void Level1Barriers()
 {
   fill(r, g, b);
 
   for (int i=0; i < barrierX.length; i++)
   {
     fill(r, g, b);
-    rect(barrierX[i], barrierY[i], randomSize[i], randomSize[i]);
+    image(Defense, barrierX[i], barrierY[i], randomSize[i], randomSize[i]);
     barrierY[i] = barrierY[i] + random(0, 25);
   }
 }
@@ -273,12 +281,12 @@ boolean CollisonDetection()
 void scoreinfo()
 {
 
-  fill(0, 0, 0);
-  textSize(20);
-  text("Level:", 50, 50);
-  text(screen, 110, 50);
-  text("Lives:", 50, 30);
-  text(Lives, 110, 30);
+  fill(r, g, b);
+  textSize(40);
+  text("Level:", 550, 50);
+  text(screen, 670, 50);
+  text("Lives:", 700, 50);
+  text(Lives, 820, 50);
 }
 
 void VictoryScreen()
