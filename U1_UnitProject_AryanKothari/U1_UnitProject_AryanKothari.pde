@@ -13,23 +13,29 @@ Minim minim;
 AudioPlayer song;
 AudioPlayer song2;
 AudioPlayer input;
+AudioPlayer song3;
 int screen = 0;
 PImage HeartEmoji;
-PImage Bob;
+PImage BobFront;
 PImage Door;
 PImage Pizza;
 PImage Broc;
 PImage Brick;
+PImage Castle;
+PImage Bob;
+PImage Level2;
 boolean CollisionDetected = false;
 int Lives = 3;
 float velY = 5;
 float velX = 5;
 float bobX = 50;
+float DoorY = 800;
+float DoorX = 1400;
 float r = random(255);
 float g = random(255);
 float b = random(255);
-int s = second();
-float bobY;
+int time;
+float bobY = 800;
 float barrierY[] = new float [10];
 float barrierX[] = new float [6];
 float randomSize[] = new float [10];
@@ -37,15 +43,23 @@ int nums[] = new int[500];
 void setup ()
 {
   Brick = loadImage("brick.png");
+  Brick.resize(width, height);
+
+  Castle = loadImage("Castle.png");
+  Castle.resize(width, height);
+
+  Level2 = loadImage("level2.png");
+  Level2.resize(width, height);
 
   fullScreen();
-  background(0, 100, 0);
+  background(Brick);
   noStroke();
 
   //Music
   minim = new Minim(this); //Music 
   song = minim.loadFile("MinionSong.mp3");
   song2 = minim.loadFile("TaaDaa.mp3");
+  song3 = minim.loadFile("DOH.mp3");
   song.loop();
 
   //randomsizeNumbers
@@ -53,8 +67,6 @@ void setup ()
   {
     nums[i] = int(random(70));
   }
-
-  bobY = height/2;
 
   //CooridinatesX for Barrier
   for (int i = 0; i<barrierX.length; i++)
@@ -67,29 +79,26 @@ void setup ()
     barrierY[i] = 0;
   }
 
+
   //Images
   HeartEmoji = loadImage("HeartEmoji.png");
-  Bob = loadImage("Bob.png");
+  BobFront = loadImage("Bob.png");
+  Bob = loadImage ("Bobplayer.png");
   Pizza = loadImage("imgres.png");
   Broc = loadImage("broc.png");
   Brick = loadImage("brick.png");
   Door = loadImage("door.png");
 
   imageMode(CENTER);
-  image(HeartEmoji, width/4.2, height/1.75, 500, 500);
+  image(BobFront, width/1.3, height/1.75, 665, 594);
 
   imageMode(CENTER);
-  image(Bob, width/1.3, height/1.75, 300, 500);
+  image(Pizza, width/5.7, height/1.9, 500, 500);
 
-  imageMode(CENTER);
-  image(Pizza, width/5.5, height/5.2, 150, 150);
-
-  imageMode(CENTER);
-  image(Pizza, width/1.32, height/5.2, 150, 150);
 
   fill (0, 0, 100);
   textSize(100);
-  text("Lovers of Bob", 350, 200);
+  text("Bob's Mission", 350, 200);
 
   fill (0, 0, 0);
   textSize(30);
@@ -121,28 +130,42 @@ void draw()
 
   if (screen == 1)
   {
-    fill(r, g, b);
-    background(0, 100, 0);
+    background(Castle);
     noStroke();
 
     Barriers();
     scoreinfo();
     BarrierRestrictions();
+    BasicPlatform();
 
     CollisonDetection();
     if (CollisionDetected == true)
     {
-      if (5 > s)
+      Lives = Lives - 1;
+      delay(1000);
+      for (int i = 0; i < barrierY.length; i++)
       {
-        Lives = Lives - 1;
+        barrierY[i] = velY*-1;
+        r = random(255);
+        g = random(255);
+        b = random(255);
+
+        randomSize[i] = 20 + (i+1)*random(0, 10);
       }
+
+      CollisionDetected = false;
     }
 
-    imageMode(CENTER);
-    image(Door, width/1.1, height/2, 50, 50);
-    image(Bob, bobX, bobY, 50, 50);
 
-    if (bobX > width/1.1)
+    if (Lives == 0)
+    {
+      textSize(40);
+      text("Quit", 670, 520);
+      pause();
+    }
+
+
+    if (bobX > width/1.05)
     {
 
       screen = 2;
@@ -152,18 +175,21 @@ void draw()
   if (screen == 2)
   {
     bobX = 50;
-    fill(r, g, b);
-    background(0, 100, 0);
-    noStroke();
+    DoorY = 780;
+    bobY = 780;
 
+    fill(r, g, b);
+    background(Level2);
+    noStroke();
     Barriers();
     scoreinfo();
     BarrierRestrictions();
+    BasicPlatform();
+  }
 
-
-    imageMode(CENTER);
-    image(Door, width/1.1, height/2, 50, 50);
-    image(Bob, bobX, bobY, 50, 50);
+  if (screen == 3)
+  {
+    background(0);
   }
 
 
@@ -185,6 +211,11 @@ void keyPressed()
   }
   if (keyCode == LEFT)
   {
+    pushMatrix();
+    scale(-2.0, 2.0);
+    image(Bob, -Bob.width, 0);
+    popMatrix();
+
     bobX = bobX - 12;
   }
 }
@@ -262,4 +293,11 @@ void VictoryScreen()
     image(Bob, random(width), random(height), nums[i], nums[i]);
     fill(random(255));
   }
+}
+
+void BasicPlatform()
+{
+  imageMode(CENTER);
+  image(Door, DoorX, DoorY, 50, 50);
+  image(Bob, bobX, bobY, 50, 50);
 }
