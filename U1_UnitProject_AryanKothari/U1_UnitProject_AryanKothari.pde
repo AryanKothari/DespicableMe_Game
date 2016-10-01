@@ -1,8 +1,10 @@
 /*
-Lovers of Bob is created by Aryan Kothari. For my second project of this class, 
- Bob has to make his way to the pizza to win! But be careful! If he gets hit by the blocks -Game Over!-
+This unit project is my development of what I did for project 2. In this game, Bob's mission is to get to his pizza, 
+ while blocking the objects falling from the sky. Since the creater of the game, ME, is generous, You are provided with three lives before losing. Good luck, 
+ and may the odds be ever in your favor! 
  */
 
+//Music libary for song 
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.effects.*;
@@ -14,8 +16,9 @@ AudioPlayer song;
 AudioPlayer song2;
 AudioPlayer input;
 AudioPlayer song3;
-int screen = 0;
-PImage HeartEmoji;
+AudioPlayer crying;
+int screen = 0; //Levels
+PImage HeartEmoji; //Images that I will be using in my game
 PImage BobFront;
 PImage Door;
 PImage Pizza;
@@ -25,8 +28,11 @@ PImage Castle;
 PImage Bob;
 PImage Level2;
 PImage Defense;
+PImage Heaven;
+PImage Hell;
+PImage SadMinion;
 boolean CollisionDetected = false;
-boolean Playing = true;
+boolean Playing = true; //movement controls 
 int Lives = 3;
 float velY = 5;
 float velX = 5;
@@ -45,6 +51,7 @@ float randomSize[] = new float [10];
 int nums[] = new int[500];
 void setup ()
 {
+  //backgrounds for my game (different levels)
   Brick = loadImage("brick.png");
   Brick.resize(width, height);
 
@@ -53,6 +60,12 @@ void setup ()
 
   Level2 = loadImage("level2.png");
   Level2.resize(width, height);
+
+  Heaven = loadImage("heaven.png");
+  Heaven.resize(width, height);
+  
+  Hell = loadImage("Hell.png");
+  Hell.resize(width, height);
 
   fullScreen();
   background(Brick);
@@ -63,27 +76,27 @@ void setup ()
   song = minim.loadFile("MinionSong.mp3");
   song2 = minim.loadFile("TaaDaa.mp3");
   song3 = minim.loadFile("DOH.mp3");
+  crying = minim.loadFile("Crying.mp3");
   song.loop();
 
-  //randomsizeNumbers
-  for (int i = 0; i < nums.length; i++)
+  for (int i = 0; i < nums.length; i++) //generate random numbers between 0, 70)
   {
     nums[i] = int(random(70));
   }
 
   //CooridinatesX for Barrier
-  for (int i = 0; i<barrierX.length; i++)
+  for (int i = 0; i<barrierX.length; i++) //x values for my falling objects
   {
     barrierX[i] = i * 200 + 100;
   }
   //CoordinatesY for barrier
-  for (int i = 0; i<barrierY.length; i++)
+  for (int i = 0; i<barrierY.length; i++) //y values for my falling objects
   {
     barrierY[i] = 0;
   }
 
 
-  //Images
+  //Loading Images
   HeartEmoji = loadImage("HeartEmoji.png");
   BobFront = loadImage("Bob.png");
   Bob = loadImage ("Bobplayer.png");
@@ -92,6 +105,7 @@ void setup ()
   Brick = loadImage("brick.png");
   Door = loadImage("door.png");
   Defense = loadImage("objects.png");
+  SadMinion = loadImage("SadMinion.png");
 
 
   imageMode(CENTER);
@@ -126,26 +140,32 @@ void setup ()
 
 void draw()
 {
-  if (Lives == 0)
+  if (Lives == 0) //go to game over screen
   {
-    background(0);
+    screen = 5;
   }
+
+  if (screen == 5) //Game Over Screen
+  {
+   LosingScreen();
+  }
+
 
 
   if (screen == 0 & mousePressed & mouseX >= 620 & mouseX <= 800 & 
-    mouseY >= 400 & mouseY <= 450) 
+    mouseY >= 400 & mouseY <= 450) //Play button/Go to game
   {
     screen = 1;
   }
-  
 
-  if (screen == 1)
+
+  if (screen == 1) //Level 1 
   {
     background(Castle);
     Level1Barriers();
     Gameplay();
 
-    if (bobX > width/1.05)
+    if (bobX > width/1.05) //If bob reaches door 
     {
       screen = 2;
       Playing = true;
@@ -155,14 +175,14 @@ void draw()
     }
   }
 
-  if (screen == 2)
+  if (screen == 2) //Level 2 
   {
-    Defense = loadImage("images.png");//specific
-    background(Level2);//specific
+    Defense = loadImage("images.png"); //New falling object
+    background(Level2);
     Level1Barriers();
     Gameplay();
-    
-        if (bobX > width/1.05)
+
+    if (bobX > width/1.05) //if bob reaches pizza 
     {
       screen = 3;
       Playing = true;
@@ -171,9 +191,25 @@ void draw()
     }
   }
 
-  if (screen == 3)
+  if (screen == 3) //Final Level, get to the pizza!
   {
-    background(0);
+    background(Heaven);
+    image(Bob, bobX, bobY, 50, 50);
+    for (int i = 0; i<2; i++)
+    {
+      fill(0, 0, 0);
+      textSize(int(random(5, 20)));
+      text("SO CLOSE", int(random(width)), int(random(height)));
+    }
+    if (bobX > width/1.05)
+    {
+      screen = 4;
+    }
+  }
+
+  if (screen == 4)
+  {
+    VictoryScreen();
   }
 
 
@@ -212,9 +248,9 @@ void keyPressed()
 
 
 
-//Boundaries for Barriers
+//below are custom functions I will be using in my levels 
 
-void Gameplay()
+void Gameplay() //this contains all the other functions, and is the basis platform for my game
 {
   fill(r, g, b);
   noStroke();
@@ -237,7 +273,7 @@ void Gameplay()
   }
 }
 
-void BarrierRestrictions()
+void BarrierRestrictions() //Flying objects reset back to top
 {
   for (int i = 0; i < barrierY.length; i++)
   {
@@ -254,10 +290,9 @@ void BarrierRestrictions()
 }
 
 
-//Making Barriers
 
 
-void Level1Barriers()
+void Level1Barriers() //Making Barriers/The shards that fall from sky
 {
   fill(r, g, b);
 
@@ -270,7 +305,7 @@ void Level1Barriers()
 }
 
 //Collision Detection Boolean
-boolean CollisonDetection()
+boolean CollisonDetection() //Boolean for detecting collision of Bob
 {
 
   for (int i = 0; i<barrierX.length; i++)
@@ -286,7 +321,7 @@ boolean CollisonDetection()
   return CollisionDetected;
 }
 
-void scoreinfo()
+void scoreinfo() //Levels and Lives 
 {
 
   fill(r, g, b);
@@ -297,21 +332,40 @@ void scoreinfo()
   text(Lives, 820, 50);
 }
 
-void VictoryScreen()
+void LosingScreen() //Losing screen forloop
+{
+  background(Hell);
+  fill(0,0,0);
+  textSize(80);
+  text("YOU HAVE FAILED!", width/5, height/2);
+  song.pause();
+  crying.play();
+  for (int i = 0; i < 100; i++)
+  {
+    imageMode(CENTER);
+    image(SadMinion, random(width), random(height), nums[i], nums[i]);
+    fill(random(255));
+  }
+}
+
+void VictoryScreen() //Victory screen for loop 
 {
 
-  background(0, 100, 0);
+  background(Heaven);
+  fill(0,0,0);
+  textSize(80);
+  text("MISSION ACCOMPLISHED!", width/5, height/2);
   song.pause();
   song2.play();
   for (int i = 0; i < 100; i++)
   {
     imageMode(CENTER);
-    image(Bob, random(width), random(height), nums[i], nums[i]);
+    image(BobFront, random(width), random(height), nums[i], nums[i]);
     fill(random(255));
   }
 }
 
-void BasicPlatform()
+void BasicPlatform() //Door and bob
 {
   imageMode(CENTER);
   image(Door, DoorX, DoorY, 50, 50);
