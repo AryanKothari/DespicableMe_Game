@@ -10,4 +10,4 @@
 <h2> Screenshots: </h2>
 <img src="http://i.imgur.com/sfts2m7.jpg">
 <img src="http://imgur.com/jhl0JIJ.jpg">
-<img scr="http://imgur.com/qCmU45j.jpg">
+<img scr="http://imgur.com/UDSFc8d.jpg">
