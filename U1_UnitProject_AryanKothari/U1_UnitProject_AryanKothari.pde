@@ -1,7 +1,7 @@
 /*
 This unit project is my development of what I did for project 2. In this game, Bob's mission is to get to his pizza, 
  while blocking the objects falling from the sky. Since the creater of the game, ME, is generous, You are provided with three lives before losing. Good luck, 
- and may the odds be ever in your favor! 
+ and may the odds be ever in your favor! BYEEE
  */
 
 //Music libary for song 
@@ -17,7 +17,7 @@ AudioPlayer song2;
 AudioPlayer input;
 AudioPlayer song3;
 AudioPlayer crying;
-int screen = 3; //Levels
+int screen = 0; //Levels
 PImage HeartEmoji; //Images that I will be using in my game
 PImage BobFront;
 PImage Door;
