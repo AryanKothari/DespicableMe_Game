@@ -8,4 +8,4 @@
 
 
 <h2> Screenshots: </h2>
-<img src="http://imgur.com/a/W2KFc">
+<img src="http://imgur.com/sfts2m7">
