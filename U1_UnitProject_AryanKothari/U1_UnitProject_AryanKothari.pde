@@ -17,7 +17,7 @@ AudioPlayer song2;
 AudioPlayer input;
 AudioPlayer song3;
 AudioPlayer crying;
-int screen = 0; //Levels
+int screen = 3; //Levels
 PImage HeartEmoji; //Images that I will be using in my game
 PImage BobFront;
 PImage Door;
@@ -30,6 +30,7 @@ PImage Level2;
 PImage Defense;
 PImage Heaven;
 PImage Hell;
+PImage Holy;
 PImage SadMinion;
 boolean CollisionDetected = false;
 boolean Playing = true; //movement controls 
@@ -63,7 +64,7 @@ void setup ()
 
   Heaven = loadImage("heaven.png");
   Heaven.resize(width, height);
-  
+
   Hell = loadImage("Hell.png");
   Hell.resize(width, height);
 
@@ -106,6 +107,7 @@ void setup ()
   Door = loadImage("door.png");
   Defense = loadImage("objects.png");
   SadMinion = loadImage("SadMinion.png");
+  Holy = loadImage("holy.png");
 
 
   imageMode(CENTER);
@@ -143,11 +145,13 @@ void draw()
   if (Lives == 0) //go to game over screen
   {
     screen = 5;
+    song.pause();
+    delay(1000);
   }
 
   if (screen == 5) //Game Over Screen
   {
-   LosingScreen();
+    LosingScreen();
   }
 
 
@@ -194,20 +198,21 @@ void draw()
   if (screen == 3) //Final Level, get to the pizza!
   {
     background(Heaven);
+    image(Pizza, width/1.05, 800, 100,100);
     image(Bob, bobX, bobY, 50, 50);
     for (int i = 0; i<2; i++)
     {
       fill(0, 0, 0);
       textSize(int(random(5, 20)));
       text("SO CLOSE", int(random(width)), int(random(height)));
-    }
-    if (bobX > width/1.05)
+    } 
+    if (bobX > width/1.05 - 50) 
     {
       screen = 4;
     }
   }
 
-  if (screen == 4)
+  if (screen == 4) //VICTORYYY!
   {
     VictoryScreen();
   }
@@ -262,14 +267,20 @@ void Gameplay() //this contains all the other functions, and is the basis platfo
 
   if (CollisionDetected == true)
   {
-    if (millis() - LastTime > 2000)
+    Lives = Lives - 1;
+    CollisionDetected = false;
+    Playing = false;
+    delay(1000);
+    for (int i = 0; i < barrierY.length; i++)
     {
-      LastTime = millis();
-      Lives = Lives - 1;
-      CollisionDetected = false;
-      song3.play();
+      barrierY[i] = velY*-1;
+      r = random(255);
+      g = random(255);
+      b = random(255);
+
+      randomSize[i] = 20 + (i+1)*random(0, 10);
     }
-    song3.pause();
+    Playing = true;
   }
 }
 
@@ -334,11 +345,11 @@ void scoreinfo() //Levels and Lives
 
 void LosingScreen() //Losing screen forloop
 {
+  song.pause();
   background(Hell);
-  fill(0,0,0);
+  fill(0, 0, 0);
   textSize(80);
   text("YOU HAVE FAILED!", width/5, height/2);
-  song.pause();
   crying.play();
   for (int i = 0; i < 100; i++)
   {
@@ -352,7 +363,7 @@ void VictoryScreen() //Victory screen for loop
 {
 
   background(Heaven);
-  fill(0,0,0);
+  fill(0, 0, 0);
   textSize(80);
   text("MISSION ACCOMPLISHED!", width/5, height/2);
   song.pause();
