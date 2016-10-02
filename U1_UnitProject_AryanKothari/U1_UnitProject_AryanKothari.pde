@@ -33,7 +33,7 @@ PImage Hell;
 PImage Holy;
 PImage SadMinion;
 boolean CollisionDetected = false;
-boolean Playing = true; //movement controls 
+boolean Playing = false; //movement controls 
 int Lives = 3;
 float velY = 5;
 float velX = 5;
@@ -278,16 +278,11 @@ void keyPressed()
     {
       if (keyCode == RIGHT)
       {
-        bobX = bobX + 12;
+        bobX = bobX + 20;
       }
       if (keyCode == LEFT)
       {
-        /* pushMatrix();
-         scale(-2.0, 2.0);
-         image(Bob, -Bob.width, 0);
-         popMatrix(); */
-
-        bobX = bobX - 12;
+        bobX = bobX - 20;
       }
     }
   }
@@ -304,6 +299,7 @@ void Gameplay() //this contains all the other functions, and is the basis platfo
   scoreinfo();
   BarrierRestrictions();
   BasicPlatform();
+  Playing = true;
 }
 
 void BarrierRestrictions() //Flying objects reset back to top
