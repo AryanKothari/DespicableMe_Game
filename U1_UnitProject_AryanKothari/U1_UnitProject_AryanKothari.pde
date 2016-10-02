@@ -37,15 +37,15 @@ boolean Playing = false; //movement controls
 int Lives = 3;
 float velY = 5;
 float velX = 5;
-float bobX = 50;
-float DoorY = 800;
-float DoorX = 1400;
+float bobX;
+float DoorY;
+float DoorX;
+float bobY;
 int LastTime = millis();
 float r = random(255);
 float g = random(255);
 float b = random(255);
 int time;
-float bobY = 800;
 float barrierY[] = new float [6];
 float barrierX[] = new float [6];
 float randomSize[] = new float [10];
@@ -117,35 +117,40 @@ void setup ()
   Defense = loadImage("objects.png");
   SadMinion = loadImage("SadMinion.png");
   Holy = loadImage("holy.png");
-
+  
+  
+  bobX = width/28.8;
+  DoorY = height/1.125;
+  DoorX = width/1.02;
+  bobY = height/1.125;
 
   imageMode(CENTER);
-  image(BobFront, width/1.3, height/1.75, 665, 594);
+  image(BobFront, width/1.3, height/1.75, width/2.16, height/1.51);
 
   imageMode(CENTER);
-  image(Pizza, width/5.7, height/1.9, 500, 500);
+  image(Pizza, width/5.7, height/1.9, width/2.88, height/1.8);
 
   fill (0, 0, 100);
   textSize(100);
-  text("Bob's Mission", 350, 200);
+  text("Bob's Mission", width/4.11, height/4.5);
 
   fill (0, 0, 0);
   textSize(30);
-  text("Created by Aryan Kothari", 1050, 860);
+  text("Created by Aryan Kothari", width/1.371, height/1.04);
 
   fill(0, 255, 0);
-  rect(620, 400, 180, 50);
+  rect(width/2.32, height/2.25, width/8, height/18);
 
   fill(0, 255, 0);
-  rect(620, 480, 180, 50);
+  rect(width/2.32, height/1.875, width/8, height/18);
 
   fill(0, 0, 255);
   textSize(35);
-  text("Play now!", 635, 440);
+  text("Play now!", width/2.267, height/2.04);
 
   fill(0, 0, 255);
   textSize(40);
-  text("Quit", 670, 520);
+  text("Quit", width/2.15, height/1.73);
 }
 
 
@@ -165,8 +170,8 @@ void draw()
 
 
 
-  if (screen == 0 & mousePressed & mouseX >= 620 & mouseX <= 800 & 
-    mouseY >= 400 & mouseY <= 450) //Play button/Go to game
+  if (screen == 0 & mousePressed & mouseX >= width/2.32 & mouseX <= width/1.8 & 
+    mouseY >= height/2.25 & mouseY <= height/2) //Play button/Go to game
   {
     screen = 1;
   }
@@ -201,9 +206,9 @@ void draw()
     {
       screen = 2;
       Playing = true;
-      bobX = 50;
-      DoorY = 780;
-      bobY = 780;
+      bobX = width/28.8;
+      bobY = height/1.15;
+      DoorY = height/1.15;
     }
   }
 
@@ -232,16 +237,16 @@ void draw()
     {
       screen = 3;
       Playing = true;
-      bobX = 50;
-      bobY = 780;
+      bobX = width/28.8;
+      bobY = height/1.15;
     }
   }
 
   if (screen == 3) //Final Level, get to the pizza!
   {
     background(Heaven);
-    image(Pizza, width/1.05, 800, 100, 100);
-    image(Bob, bobX, bobY, 50, 50);
+    image(Pizza, width/1.05, height/1.125, height/14.4, height/9);
+    image(Bob, bobX, bobY, width/28.8, height/18);
     for (int i = 0; i<2; i++)
     {
       fill(0, 0, 0);
@@ -260,8 +265,8 @@ void draw()
   }
 
 
-  if (screen == 0 & mousePressed & mouseX >= 620 & mouseX <= 800 & 
-    mouseY >= 480 & mouseY <= 520) //Exit Game 
+  if (screen == 0 & mousePressed & mouseX >= width/2.32 & mouseX <= width/1.8 & 
+    mouseY >= height/1.875 & mouseY <= height/1.73) //Exit Game 
   {
     exit();
   }
@@ -324,7 +329,7 @@ void Level2Barriers() //makaking the defense for level 2
   for (int i = 0; i<Lev2barrierX.length; i++)
   {
     fill(255, 255, 255);
-    image(Defense, Lev2barrierX[i], Lev2barrierY[i], 50, 50);
+    image(Defense, Lev2barrierX[i], Lev2barrierY[i], width/28.8, height/18);
     Lev2barrierX[i] = Lev2barrierX[i] + Lev2velX[i];
     Lev2barrierY[i] = Lev2barrierY[i] + Lev2velY[i];
 
@@ -398,10 +403,10 @@ void scoreinfo() //Levels and Lives
 
   fill(r, g, b);
   textSize(40);
-  text("Level:", 550, 50);
-  text(screen, 670, 50);
-  text("Lives:", 700, 50);
-  text(Lives, 820, 50);
+  text("Level:", width/2.61, height/18);
+  text(screen, width/2.15, height/18);
+  text("Lives:", width/2.05, height/18);
+  text(Lives, width/1.76, height/18);
 }
 
 void LosingScreen() //Losing screen forloop
@@ -440,6 +445,6 @@ void VictoryScreen() //Victory screen for loop
 void BasicPlatform() //Door and bob
 {
   imageMode(CENTER);
-  image(Door, DoorX, DoorY, 50, 50);
-  image(Bob, bobX, bobY, 50, 50);
+  image(Door, DoorX, DoorY, width/28.8, height/18);
+  image(Bob, bobX, bobY, width/28.8, height/18);
 }
