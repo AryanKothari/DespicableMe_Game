@@ -177,9 +177,9 @@ void draw()
     background(Castle);
     Level1Barriers();
     Gameplay();
-
-
-    if (CollisionDetected == true)
+    CollisonDetection();
+    
+      if (CollisionDetected == true)
     {
       Lives = Lives - 1;
       CollisionDetected = false;
@@ -213,231 +213,237 @@ void draw()
     background(Level2);
     Level2Barriers();
     Gameplay();
+    Lev2CollisonDetection();
 
-    if (CollisionDetected)
+    if (CollisionDetected == true)
     {
       Playing = false;
       Lives = Lives - 1;
-      delay(1000);
       for (int i = 0; i<Lev2barrierX.length; i++) //x values for my falling objects
       {
         Lev2barrierX[i] = int(random(width/4, width/1));
         Lev2barrierY[i] = int(random(height));
       }
-        CollisionDetected = false;
-        Playing = true;
-      }
-
-      if (bobX > width/1.05) //if bob reaches pizza 
-      {
-        screen = 3;
-        Playing = true;
-        bobX = 50;
-        bobY = 780;
-      }
+      CollisionDetected = false;
+      Playing = true;
     }
 
-    if (screen == 3) //Final Level, get to the pizza!
+    if (bobX > width/1.05) //if bob reaches pizza 
     {
-      background(Heaven);
-      image(Pizza, width/1.05, 800, 100, 100);
-      image(Bob, bobX, bobY, 50, 50);
-      for (int i = 0; i<2; i++)
-      {
-        fill(0, 0, 0);
-        textSize(int(random(5, 20)));
-        text("SO CLOSE", int(random(width)), int(random(height)));
-      } 
-      if (bobX > width/1.05 - 50) 
-      {
-        screen = 4;
-      }
-    }
-
-    if (screen == 4) //VICTORYYY!
-    {
-      VictoryScreen();
-    }
-
-
-    if (screen == 0 & mousePressed & mouseX >= 620 & mouseX <= 800 & 
-      mouseY >= 480 & mouseY <= 520) //Exit Game 
-    {
-      exit();
+      screen = 3;
+      Playing = true;
+      bobX = 50;
+      bobY = 780;
     }
   }
 
-
-
-  //Moving Bob
-  void keyPressed()
+  if (screen == 3) //Final Level, get to the pizza!
   {
-    if (keyPressed)
-    {
-      if (Playing)
-      {
-        if (keyCode == RIGHT)
-        {
-          bobX = bobX + 12;
-        }
-        if (keyCode == LEFT)
-        {
-          /* pushMatrix();
-           scale(-2.0, 2.0);
-           image(Bob, -Bob.width, 0);
-           popMatrix(); */
-
-          bobX = bobX - 12;
-        }
-      }
-    }
-  }
-
-
-
-  //below are custom functions I will be using in my levels 
-
-  void Gameplay() //this contains all the other functions, and is the basis platform for my game
-  {
-    fill(r, g, b);
-    noStroke();
-    scoreinfo();
-    BarrierRestrictions();
-    BasicPlatform();
-    CollisonDetection();
-  }
-
-  void BarrierRestrictions() //Flying objects reset back to top
-  {
-    for (int i = 0; i < barrierY.length; i++)
-    {
-      if (barrierY[i] > height)
-      {
-        barrierY[i] = velY*-1;
-        r = random(255);
-        g = random(255);
-        b = random(255);
-
-        randomSize[i] = 20 + (i+1)*random(0, 10);
-      }
-    }
-  }
-
-
-  void Level2Barriers() //makaking the defense for level 2 
-  {
-    for (int i = 0; i<Lev2barrierX.length; i++)
-    {
-      fill(255, 255, 255);
-      image(Defense, Lev2barrierX[i], Lev2barrierY[i], 50, 50);
-      Lev2barrierX[i] = Lev2barrierX[i] + Lev2velX[i];
-      Lev2barrierY[i] = Lev2barrierY[i] + Lev2velY[i];
-
-      if (Lev2barrierY[i] > height)
-      {
-        Lev2velY[i] = random(-10, -2);
-      }
-
-      if (Lev2barrierY[i] < 0)
-      {
-        Lev2velY[i] = random(2, 10);
-      }
-
-      if (Lev2barrierX[i] < 0)
-      {
-        Lev2velX[i] = random(2, 10);
-      }
-
-      if (Lev2barrierX[i] > width)
-      {
-        Lev2velX[i] = random(-10, 2);
-      }
-    }
-  }
-
-  void Level1Barriers() //Making Barriers/The shards that fall from sky
-  {
-    fill(r, g, b);
-
-    for (int i=0; i < barrierX.length; i++)
-    {
-      fill(r, g, b);
-      image(Defense, barrierX[i], barrierY[i], randomSize[i], randomSize[i]);
-      barrierY[i] = barrierY[i] + random(0, 25);
-    }
-  }
-
-  //Collision Detection Boolean
-  boolean CollisonDetection() //Boolean for detecting collision of Bob
-  {
-
-    for (int i = 0; i<barrierX.length; i++)
-    {
-      if (bobX < barrierX[i] + randomSize[i] &&
-        bobX + 50 - 20 > barrierX[i] &&
-        bobY < barrierY[i] + randomSize[i] &&
-        50 + bobY - 20 > barrierY[i])
-      {
-        CollisionDetected = true;
-      }
-      if (bobX < Lev2barrierX[i] + 50 &&
-        bobX + 50 - 20 > Lev2barrierX[i] &&
-        bobY < Lev2barrierY[i] + 50 &&
-        50 + bobY - 20 > Lev2barrierY[i])
-      {
-        CollisionDetected = true;
-      }
-    }
-    return CollisionDetected;
-  }
-
-  void scoreinfo() //Levels and Lives 
-  {
-
-    fill(r, g, b);
-    textSize(40);
-    text("Level:", 550, 50);
-    text(screen, 670, 50);
-    text("Lives:", 700, 50);
-    text(Lives, 820, 50);
-  }
-
-  void LosingScreen() //Losing screen forloop
-  {
-    song.pause();
-    background(Hell);
-    fill(0, 0, 0);
-    textSize(80);
-    text("YOU HAVE FAILED!", width/5, height/2);
-    crying.play();
-    for (int i = 0; i < 100; i++)
-    {
-      imageMode(CENTER);
-      image(SadMinion, random(width), random(height), nums[i], nums[i]);
-      fill(random(255));
-    }
-  }
-
-  void VictoryScreen() //Victory screen for loop 
-  {
-
     background(Heaven);
-    fill(0, 0, 0);
-    textSize(80);
-    text("MISSION ACCOMPLISHED!", width/5, height/2);
-    song.pause();
-    song2.play();
-    for (int i = 0; i < 100; i++)
+    image(Pizza, width/1.05, 800, 100, 100);
+    image(Bob, bobX, bobY, 50, 50);
+    for (int i = 0; i<2; i++)
     {
-      imageMode(CENTER);
-      image(BobFront, random(width), random(height), nums[i], nums[i]);
-      fill(random(255));
+      fill(0, 0, 0);
+      textSize(int(random(5, 20)));
+      text("SO CLOSE", int(random(width)), int(random(height)));
+    } 
+    if (bobX > width/1.05 - 50) 
+    {
+      screen = 4;
     }
   }
 
-  void BasicPlatform() //Door and bob
+  if (screen == 4) //VICTORYYY!
+  {
+    VictoryScreen();
+  }
+
+
+  if (screen == 0 & mousePressed & mouseX >= 620 & mouseX <= 800 & 
+    mouseY >= 480 & mouseY <= 520) //Exit Game 
+  {
+    exit();
+  }
+}
+
+
+
+//Moving Bob
+void keyPressed()
+{
+  if (keyPressed)
+  {
+    if (Playing)
+    {
+      if (keyCode == RIGHT)
+      {
+        bobX = bobX + 12;
+      }
+      if (keyCode == LEFT)
+      {
+        /* pushMatrix();
+         scale(-2.0, 2.0);
+         image(Bob, -Bob.width, 0);
+         popMatrix(); */
+
+        bobX = bobX - 12;
+      }
+    }
+  }
+}
+
+
+
+//below are custom functions I will be using in my levels 
+
+void Gameplay() //this contains all the other functions, and is the basis platform for my game
+{
+  fill(r, g, b);
+  noStroke();
+  scoreinfo();
+  BarrierRestrictions();
+  BasicPlatform();
+}
+
+void BarrierRestrictions() //Flying objects reset back to top
+{
+  for (int i = 0; i < barrierY.length; i++)
+  {
+    if (barrierY[i] > height)
+    {
+      barrierY[i] = velY*-1;
+      r = random(255);
+      g = random(255);
+      b = random(255);
+
+      randomSize[i] = 20 + (i+1)*random(0, 10);
+    }
+  }
+}
+
+
+void Level2Barriers() //makaking the defense for level 2 
+{
+  for (int i = 0; i<Lev2barrierX.length; i++)
+  {
+    fill(255, 255, 255);
+    image(Defense, Lev2barrierX[i], Lev2barrierY[i], 50, 50);
+    Lev2barrierX[i] = Lev2barrierX[i] + Lev2velX[i];
+    Lev2barrierY[i] = Lev2barrierY[i] + Lev2velY[i];
+
+    if (Lev2barrierY[i] > height)
+    {
+      Lev2velY[i] = random(-10, -2);
+    }
+
+    if (Lev2barrierY[i] < 0)
+    {
+      Lev2velY[i] = random(2, 10);
+    }
+
+    if (Lev2barrierX[i] < 0)
+    {
+      Lev2velX[i] = random(2, 10);
+    }
+
+    if (Lev2barrierX[i] > width)
+    {
+      Lev2velX[i] = random(-10, 2);
+    }
+  }
+}
+
+void Level1Barriers() //Making Barriers/The shards that fall from sky
+{
+  fill(r, g, b);
+
+  for (int i=0; i < barrierX.length; i++)
+  {
+    fill(r, g, b);
+    image(Defense, barrierX[i], barrierY[i], randomSize[i], randomSize[i]);
+    barrierY[i] = barrierY[i] + random(0, 25);
+  }
+}
+
+//Collision Detection Boolean
+boolean CollisonDetection() //Boolean for detecting collision of Bob
+{
+  for (int i = 0; i<barrierX.length; i++)
+  {
+    if (bobX < barrierX[i] + randomSize[i] &&
+      bobX + 50 - 20 > barrierX[i] &&
+      bobY < barrierY[i] + randomSize[i] &&
+      50 + bobY - 20 > barrierY[i])
+    {
+      CollisionDetected = true;
+    }
+  }
+  return CollisionDetected;
+}
+
+boolean Lev2CollisonDetection() //Boolean for detecting collision of Bob
+{
+  for (int i = 0; i<barrierX.length; i++)
+  {
+    if (bobX < Lev2barrierX[i] + 50 &&
+      bobX + 50 - 20 > Lev2barrierX[i] &&
+      bobY < Lev2barrierY[i] + 50 &&
+      50 + bobY - 20 > Lev2barrierY[i])
+    {
+      CollisionDetected = true;
+    }
+  }
+  return CollisionDetected;
+}
+
+void scoreinfo() //Levels and Lives 
+{
+
+  fill(r, g, b);
+  textSize(40);
+  text("Level:", 550, 50);
+  text(screen, 670, 50);
+  text("Lives:", 700, 50);
+  text(Lives, 820, 50);
+}
+
+void LosingScreen() //Losing screen forloop
+{
+  song.pause();
+  background(Hell);
+  fill(0, 0, 0);
+  textSize(80);
+  text("YOU HAVE FAILED!", width/5, height/2);
+  crying.play();
+  for (int i = 0; i < 100; i++)
   {
     imageMode(CENTER);
-    image(Door, DoorX, DoorY, 50, 50);
-    image(Bob, bobX, bobY, 50, 50);
+    image(SadMinion, random(width), random(height), nums[i], nums[i]);
+    fill(random(255));
   }
+}
+
+void VictoryScreen() //Victory screen for loop 
+{
+
+  background(Heaven);
+  fill(0, 0, 0);
+  textSize(80);
+  text("MISSION ACCOMPLISHED!", width/5, height/2);
+  song.pause();
+  song2.play();
+  for (int i = 0; i < 100; i++)
+  {
+    imageMode(CENTER);
+    image(BobFront, random(width), random(height), nums[i], nums[i]);
+    fill(random(255));
+  }
+}
+
+void BasicPlatform() //Door and bob
+{
+  imageMode(CENTER);
+  image(Door, DoorX, DoorY, 50, 50);
+  image(Bob, bobX, bobY, 50, 50);
+}
