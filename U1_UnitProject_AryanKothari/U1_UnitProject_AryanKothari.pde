@@ -117,8 +117,8 @@ void setup ()
   Defense = loadImage("objects.png");
   SadMinion = loadImage("SadMinion.png");
   Holy = loadImage("holy.png");
-  
-  
+
+
   bobX = width/28.8;
   DoorY = height/1.125;
   DoorX = width/1.02;
@@ -158,9 +158,13 @@ void draw()
 {
   if (Lives == 0) //go to game over screen
   {
-    screen = 5;
     song.pause();
     delay(1000);
+   // LastTime = millis();
+   // if (millis() - LastTime > 1000)
+    //{
+      screen = 5;
+    //}
   }
 
   if (screen == 5) //Game Over Screen
@@ -183,24 +187,24 @@ void draw()
     Level1Barriers();
     Gameplay();
     CollisonDetection();
-    
-      if (CollisionDetected == true)
+
+    if (CollisionDetected == true)
     {
       Lives = Lives - 1;
       CollisionDetected = false;
       Playing = false;
-      delay(1000);
-      for (int i = 0; i < barrierY.length; i++)
-      {
-        barrierY[i] = velY*-1;
-        r = random(255);
-        g = random(255);
-        b = random(255);
+      bobX = width/28.8;
+        for (int i = 0; i < barrierY.length; i++)
+        {
+          barrierY[i] = velY*-1;
+          r = random(255);
+          g = random(255);
+          b = random(255);
 
-        randomSize[i] = 20 + (i+1)*random(0, 10);
+          randomSize[i] = 20 + (i+1)*random(0, 10);
+        }
+        Playing = true;
       }
-      Playing = true;
-    }
 
     if (bobX > width/1.05) //If bob reaches door 
     {
@@ -224,6 +228,7 @@ void draw()
     {
       Playing = false;
       Lives = Lives - 1;
+      bobX = width/28.8;
       for (int i = 0; i<Lev2barrierX.length; i++) //x values for my falling objects
       {
         Lev2barrierX[i] = int(random(width/4, width/1));
