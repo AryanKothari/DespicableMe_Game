@@ -326,7 +326,7 @@ void BarrierRestrictions() //Flying objects reset back to top
 }
 
 
-void Level2Barriers() //makaking the defense for level 2 
+void Level2Barriers() //making the defense for level 2 
 {
   for (int i = 0; i<Lev2barrierX.length; i++)
   {
