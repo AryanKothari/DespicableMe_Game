@@ -159,16 +159,13 @@ void draw()
   if (Lives == 0) //go to game over screen
   {
     song.pause();
-    delay(1000);
-   // LastTime = millis();
-   // if (millis() - LastTime > 1000)
-    //{
-      screen = 5;
-    //}
+    screen = 5;
+    Playing = false;
   }
 
   if (screen == 5) //Game Over Screen
   {
+
     LosingScreen();
   }
 
@@ -194,17 +191,17 @@ void draw()
       CollisionDetected = false;
       Playing = false;
       bobX = width/28.8;
-        for (int i = 0; i < barrierY.length; i++)
-        {
-          barrierY[i] = velY*-1;
-          r = random(255);
-          g = random(255);
-          b = random(255);
+      for (int i = 0; i < barrierY.length; i++)
+      {
+        barrierY[i] = velY*-1;
+        r = random(255);
+        g = random(255);
+        b = random(255);
 
-          randomSize[i] = 20 + (i+1)*random(0, 10);
-        }
-        Playing = true;
+        randomSize[i] = 20 + (i+1)*random(0, 10);
       }
+      Playing = true;
+    }
 
     if (bobX > width/1.05) //If bob reaches door 
     {
